@@ -1,5 +1,5 @@
 "use client";
-import { useTasks } from "../context/TaskContext";
+import { useTasks } from "../context/TasksContext";
 import {TaskCard} from "../components/TaskCard";
 
 function Page() {

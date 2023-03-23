@@ -11,6 +11,7 @@ export const TaskCard = ({ task }) => {
       <h1>{task.title}</h1>
       <button>Delete</button>
       <p>{task.description}</p>
+      <p>{task.id}</p>
     </div>
   );
 };

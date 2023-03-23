@@ -1,4 +1,4 @@
-import { TaskProvider } from "../context/TaskContext";
+import { TaskProvider } from "../context/TasksContext";
 import "./globals.css";
 
 export const metadata = {
