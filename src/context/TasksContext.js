@@ -14,17 +14,29 @@ export const useTasks = () => {
 };
 
 export const TaskProvider = ({ children }) => {
-  const [tasks, setTasks] =  useState([
+  const [tasks, setTasks] = useState([
     { id: 1, title: "Task 1", description: "Description 1" },
     { id: 2, title: "Task 2", description: "Description 2" },
-    { id: 3, title: "Task 3", description: "Description 3" }
+    { id: 3, title: "Task 3", description: "Description 3" },
   ]);
 
   const createTask = (title, description) => {
-    setTasks([...tasks, { id: uuid(), title, description }])
+    setTasks([...tasks, { id: uuid(), title, description }]);
+  };
+
+  const deleteTask = (id) => {
+    setTasks([...tasks.filter((task) => task.id !== id)]);
   };
 
   return (
-    <TasksContext.Provider value={{ tasks, createTask:createTask }}>{children}</TasksContext.Provider>
+    <TasksContext.Provider
+      value={{
+        tasks,
+        createTask,
+        deleteTask,
+      }}
+    >
+      {children}
+    </TasksContext.Provider>
   );
 };
