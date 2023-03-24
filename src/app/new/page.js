@@ -1,59 +1,61 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTasks } from "../../context/TasksContext";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
-function page({params}) {
-  const [task, setTask] = useState(
-    { title: "", description: "" }
-  );
-
+function page({ params }) {
   const { tasks, createTask, updateTask } = useTasks();
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm();
 
-  const handleChange = (e) => {
-    setTask({ ...task, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const onSubmit = handleSubmit((data) => {
     if (params.id) {
-      updateTask(params.id, task);
+      updateTask(params.id, data);
+      toast.success("Task updated successfully");
     } else {
-      createTask(task.title, task.description);
+      createTask(data.title, data.description);
+      toast.success("Task created successfully");
     }
-
     router.push("/");
-  };
+  });
 
   useEffect(() => {
     if (params.id) {
       const taskFound = tasks.find((task) => task.id === params.id);
-      if (taskFound)
-        setTask({
-          title: taskFound.title,
-          description: taskFound.description
-        });
+      if (taskFound) {
+        setValue("title", taskFound.title);
+        setValue("description", taskFound.description);
+      }
     }
   }, [tasks, params.id]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        name="title"
-        placeholder="Write a title"
-        onChange={handleChange}
-        value={task.title}
-      />
-      <textarea
-        name="description"
-        placeholder="Write a description"
-        onChange={handleChange}
-        value={task.description}
-      />
-      <button>Save</button>
-    </form>
+    <div className="flex justify-center items-center h-full">
+      <form onSubmit={onSubmit} className="bg-gray-700 p-10">
+        <h2 className="mb-2">New Task</h2>
+        <input
+        className="bg-gray-800 py-3 px-4 mb-2 block"
+          placeholder="Write a title"
+          {...register("title", { required: true })}
+        />
+        {errors.title && <span className="block text-red-400 mb-2">This field is required</span>}
+
+        <textarea
+         className="bg-gray-800 py-3 px-4 mb-2 block"
+          placeholder="Write a description"
+          {...register("description", { required: true })}
+        />
+        {errors.description && <span  className="block text-red-400 mb-2">This field is required</span>}
+        <button className="bg-green-500 hover:bg-green-400 px-4 py-2 rounded-sm disabled:opacity-30 ">Save</button>
+      </form>
+    </div>
   );
 }
 
